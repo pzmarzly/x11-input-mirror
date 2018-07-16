@@ -12,6 +12,8 @@ If you need more security, disable built-in encryption (by setting `password = "
 
 ## Installation
 
+Download [the latest release](https://github.com/pzmarzly/x11-input-mirror/releases).
+
 ```text
 sudo apt install xdotool numlockx xinput
 ```
