@@ -34,6 +34,8 @@ Download Rust nightly toolchain, then run `cargo build --release`.
 
 Licensed MIT.
 
-Exposes many functions and can be also used as a library.
+Exposes many functions and can be also used as a library. But since the crate is not well documented, I recommend browsing the source before using it.
 
 Uses synchronous networking code, so may be not suited well for controlling multiple machines over high-latency networks.
+
+The code is pretty bad, but it works for now. Feel free to improve it.
