@@ -15,8 +15,11 @@ pub enum EventKind {
 #[derive(Debug)]
 pub struct Event {
     pub kind: EventKind,
+    /// Keyboard button ID or mouse button ID.
     pub code: u8,
+    /// Mouse position X, or 0 in case of keyboard event.
     pub x: u16,
+    /// Mouse position Y, or 0 in case of keyboard event.
     pub y: u16
 }
 
