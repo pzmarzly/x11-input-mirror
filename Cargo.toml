@@ -1,7 +1,13 @@
 [package]
 name = "x11-input-mirror"
 version = "0.1.0"
+description = "Mirrors X11 (Xserver) input events from one PC to multiple over the network"
 authors = ["Paweł Zmarzły <pawo2500@gmail.com>"]
+repository = "https://github.com/pzmarzly/x11-input-mirror"
+keywords = ["x11", "network", "mouse", "keyboard", "xserver"]
+readme = "README.md"
+categories = ["network-programming", "command-line-utilities"]
+license = "MIT"
 
 [dependencies]
 serde = "1.0.70"
@@ -10,3 +16,6 @@ toml = "0.4.6"
 rand = "0.5.4"
 chacha = "0.1.0"
 sha3 = "0.7.3"
+
+[profile.release]
+lto = true
