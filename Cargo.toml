@@ -1,0 +1,12 @@
+[package]
+name = "x11-input-mirror"
+version = "0.1.0"
+authors = ["Paweł Zmarzły <pawo2500@gmail.com>"]
+
+[dependencies]
+serde = "1.0.70"
+serde_derive = "1.0.70"
+toml = "0.4.6"
+rand = "0.5.4"
+chacha = "0.1.0"
+sha3 = "0.7.3"

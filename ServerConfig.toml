@@ -1,0 +1,2 @@
+interface_and_port = "0.0.0.0:9005"
+max_ping_ms = 500
