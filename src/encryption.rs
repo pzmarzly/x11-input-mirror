@@ -9,6 +9,16 @@ pub fn random_fill_25(buf: &mut [u8]) {
     buf.copy_from_slice(&res);
 }
 
+pub fn is_tampered_16(buf: &[u8]) -> bool {
+    let mut tampered = false;
+    for i in 0..8 {
+        if buf[i] != buf[i + 8] {
+            tampered = true;
+        }
+    }
+    tampered
+}
+
 pub struct ChaCha {
     internal: Option<chacha::ChaCha>
 }

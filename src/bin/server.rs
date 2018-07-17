@@ -1,6 +1,7 @@
 extern crate x11_input_mirror;
 use x11_input_mirror::*;
 
+use encryption::is_tampered_16;
 use config::{SecurityConfig, ServerConfig};
 use keyboard_reset::reset_keys;
 use utils::{decode_u16, need_dep};
@@ -96,9 +97,13 @@ fn handler_thread(conn: &mut TcpStream, max_ping: Duration, password: &str) {
 
     // loop, gets canceled by timeout or broken pipe
     loop {
-        let mut buf = [0u8; 8];
+        let mut buf = [0u8; 16];
         conn.read_exact(&mut buf).unwrap_or_else(|_| panic!("Client {} disconnected", addr));
-        chacha.xor(&mut buf);
+        chacha.xor(&mut buf[..8]);
+        chacha.xor(&mut buf[8..]);
+        if is_tampered_16(&buf) {
+            panic!("Data from client {} are corrupted", addr);
+        }
         match buf[0] {
             100 => {
                 let x = decode_u16(&buf[1..3]);

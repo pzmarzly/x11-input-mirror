@@ -60,11 +60,16 @@ impl Connector {
         }).collect::<Vec<_>>();
         Connector { conns }
     }
-    pub fn write(&mut self, data: [u8; 8]) {
+    pub fn write(&mut self, data: [u8; 16]) {
         for (conn, addr, chacha) in &mut self.conns {
             let mut conn = conn;
             let mut data = data;
-            chacha.xor(&mut data);
+            {
+                let (ldata, rdata) = &mut data.split_at_mut(8);
+                rdata.copy_from_slice(ldata);
+            }
+            chacha.xor(&mut data[..8]);
+            chacha.xor(&mut data[8..]);
             conn.write_all(&data).unwrap_or_else(|_| panic!("Connection to server {} lost", addr));
         }
     }

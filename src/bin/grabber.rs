@@ -23,9 +23,10 @@ fn main() {
     let keyboard_and_clicks_rx = keyboard_and_clicks::spawn_thread(config.keyboard_and_clicks_interval_ms);
 
     println!("Started successfully");
+
+    let mut buf = [0u8; 16];
     loop {
         for msg in mouse_rx.try_iter() {
-            let mut buf = [0u8; 8];
             buf[0] = 100;
             buf[1..3].copy_from_slice(&encode_u16(msg.x));
             buf[3..5].copy_from_slice(&encode_u16(msg.y));
@@ -33,7 +34,6 @@ fn main() {
         }
         for msg in keyboard_and_clicks_rx.try_iter() {
             use keyboard_and_clicks::EventKind::*;
-            let mut buf = [0u8; 8];
             buf[0] = match msg.kind {
                 KeyDown | KeyUp => 101,
                 MouseDown | MouseUp => 102
