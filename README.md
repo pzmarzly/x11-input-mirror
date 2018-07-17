@@ -6,7 +6,7 @@ Captures mouse and keyboard events on one PC, then broadcasts them over the netw
 
 ## Security
 
-You can enable encryption by setting `password` to be a non-empty string. However, if an attacker has been recording your traffic and gets your password, they will be able to decrypt all the traffic they recorder (no PFS). This program simply uses XChaCha20 with key being derived from password, and random nonce being sent in plaintext.
+You can enable encryption by setting `password` to be a non-empty string. However, if an attacker has been recording your traffic and gets your password, they will be able to decrypt all the traffic they recorder (no PFS). This program simply uses XChaCha20 with key being derived from password, and random initial nonce being sent in plaintext. Then message is sent twice, encrypted using different nonces, as a simple integrity check.
 
 If you need more security, disable built-in encryption (by setting `password = ""`) and tunnel the traffic over SSH/OpenVPN/WireGuard etc.
 
@@ -25,6 +25,8 @@ Optionally, install and use `screenkey` for debugging.
 Use `grabber` binary on master server, and `server` on slaves.
 
 `grabber` requires `GrabberConfig.toml` and `SecurityConfig.toml`. `server` requires `ServerConfig.toml` and `SecurityConfig.toml`. Example files are in this repo.
+
+If you want to use the program inside VirtualBox, you need to disable Mouse Integration on slave servers.
 
 ## Compiling
 
