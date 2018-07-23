@@ -38,7 +38,7 @@ Some applications (e.g. Chromium-based browsers) grab control of input device wh
 
 ```text
 # the scripts I provided use i3 for window resizing. They use separate config file
-sudo apt install coreutils xserver-xephyr i3
+sudo apt install coreutils xserver-xephyr i3 x11-xserver-utils
 ./Xephyr/start.sh 800x600 i3-chrome
 ```
 
