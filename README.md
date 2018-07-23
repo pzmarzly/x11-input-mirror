@@ -57,3 +57,5 @@ Exposes many functions and can be also used as a library. But since the crate is
 Uses synchronous networking code, so may be not suited well for controlling multiple machines over high-latency networks.
 
 The code is pretty bad, but it works for now. Feel free to improve it.
+
+Please keep in mind that devices can de-synchronize due to external factors (e.g. connectivity problems, VM having uneven resources, leading to program requiring more time to start). If you open YouTube in 2 browsers with no cookies, same User Agent, at the same time, from the same IP, you will probably get different order of videos.
