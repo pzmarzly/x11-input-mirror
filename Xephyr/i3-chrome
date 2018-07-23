@@ -1,0 +1,16 @@
+# i3 config file (v4)
+
+# new format:
+#default_border pixel 0
+#default_floating_border pixel 1
+# old format:
+new_window pixel 0
+new_float pixel 1
+
+font pango:monospace 8
+for_window [floating] floating disable
+workspace_layout stacking
+exec --no-startup-id sh -c "while xrandr >/dev/null 2>&1; do sleep 5; done"
+
+# change command here:
+exec --no-startup-id google-chrome-stable

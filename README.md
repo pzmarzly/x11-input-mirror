@@ -32,6 +32,22 @@ If you want to use the program inside VirtualBox, you need to disable Mouse Inte
 
 Download Rust nightly toolchain, then run `cargo build --release`.
 
+## X11 grabbing workaround
+
+Some applications (e.g. Chromium-based browsers) grab control of input device while they are used. Because of that, x11-input-mirror fails to mirror mouse clicks and/or keypresses between devices. A workaround is to use Xephyr (X11 inside X11). In `Xephyr` directory there are scripts that should help you get started. To use them:
+
+```text
+# the scripts I provided use i3 for window resizing. They use separate config file
+sudo apt install coreutils xserver-xephyr i3
+./Xephyr/start.sh 800x600 i3-chrome
+```
+
+Then `grabber` running outside of Xephyr will be able to capture all events.
+
+You can create launchers for other programs by making a copy of `i3-chrome` and customizing it.
+
+You may need to edit `i3-chrome` once `i3` changes its configuration format.
+
 ## Misc
 
 Licensed MIT.
