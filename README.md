@@ -48,6 +48,8 @@ You can create launchers for other programs by making a copy of `i3-chrome` and 
 
 You may need to edit `i3-chrome` once `i3` changes its configuration format.
 
+If you want to run instances of Chromium-based browser inside and outside Xephyr at the same time, pass `--user-data-dir=somedirectory` flag to one of them.
+
 ## Misc
 
 Licensed MIT.
