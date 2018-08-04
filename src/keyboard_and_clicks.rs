@@ -49,13 +49,13 @@ pub fn spawn_thread(interval_ms: u64) -> Receiver<Event> {
             for line in lines.split('\n') {
                 match mode {
                     None => {
-                        if line.starts_with("EVENT type 2 (KeyPress)") {
+                        if line.starts_with("EVENT type 2") {
                             mode = Some(KeyDown);
-                        } else if line.starts_with("EVENT type 3 (KeyRelease)") {
+                        } else if line.starts_with("EVENT type 3") {
                             mode = Some(KeyUp);
-                        } else if line.starts_with("EVENT type 4 (ButtonPress)") {
+                        } else if line.starts_with("EVENT type 4") {
                             mode = Some(MouseDown);
-                        } else if line.starts_with("EVENT type 5 (ButtonRelease)") {
+                        } else if line.starts_with("EVENT type 5") {
                             mode = Some(MouseUp);
                         }
                     },
