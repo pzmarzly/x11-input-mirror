@@ -1,4 +1,5 @@
 use std::process::Command;
+use std::str;
 use std::sync::mpsc::{channel, Receiver};
 use std::thread::{sleep, spawn};
 use std::time::Duration;
@@ -27,7 +28,7 @@ pub fn get_current_mouse_location() -> Event {
         .output()
         .unwrap();
     let stdout = r.stdout;
-    let stdout = String::from_utf8_lossy(&stdout);
+    let stdout = unsafe { str::from_utf8_unchecked(&stdout) };
     let coords = stdout.split(' ').take(2);
     let coords = coords.map(|s| s[2..].parse::<u16>().unwrap());
     let coords = coords.collect::<Vec<_>>();
