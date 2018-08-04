@@ -21,6 +21,7 @@ fn main() {
 
     let sec_config = SecurityConfig::load();
     let password = sec_config.password;
+    if password.len() < 12 { panic!("Password must have at least 12 characters") }
 
     let addr = config.interface_and_port;
     let listener = TcpListener::bind(addr).unwrap_or_else(|_| panic!("Cannot bind on {}", addr));

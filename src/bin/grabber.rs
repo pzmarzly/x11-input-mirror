@@ -17,6 +17,7 @@ fn main() {
 
     let sec_config = SecurityConfig::load();
     let password = sec_config.password;
+    if password.len() < 12 { panic!("Password must have at least 12 characters") }
 
     let mut conns = Connector::connect(config.servers, max_ping, &password);
     let mouse_rx = mouse::spawn_thread(config.mouse_interval_ms);
