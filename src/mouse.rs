@@ -14,18 +14,22 @@ pub fn spawn_thread(interval_ms: u64) -> Receiver<Event> {
     let (tx, rx) = channel();
     spawn(move || {
         loop {
-            let r = Command::new("xdotool")
-                .arg("getmouselocation")
-                .output()
-                .unwrap();
-            let stdout = r.stdout;
-            let stdout = String::from_utf8_lossy(&stdout);
-            let coords = stdout.split(' ').take(2);
-            let coords = coords.map(|s| s[2..].parse::<u16>().unwrap());
-            let coords = coords.collect::<Vec<_>>();
-            tx.send(Event { x: coords[0], y: coords[1] }).unwrap();
+            tx.send(get_current_mouse_location()).unwrap();
             sleep(interval);
         }
     });
     rx
+}
+
+pub fn get_current_mouse_location() -> Event {
+    let r = Command::new("xdotool")
+        .arg("getmouselocation")
+        .output()
+        .unwrap();
+    let stdout = r.stdout;
+    let stdout = String::from_utf8_lossy(&stdout);
+    let coords = stdout.split(' ').take(2);
+    let coords = coords.map(|s| s[2..].parse::<u16>().unwrap());
+    let coords = coords.collect::<Vec<_>>();
+    Event { x: coords[0], y: coords[1] }
 }

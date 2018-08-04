@@ -1,3 +1,5 @@
+use mouse;
+
 use std::io::Read;
 use std::process::{Command, Stdio};
 use std::sync::mpsc::{channel, Receiver, Sender};
@@ -37,7 +39,6 @@ pub fn spawn_thread(interval_ms: u64) -> Receiver<Event> {
         let mut stdout = r.stdout.unwrap();
         let mut buf = vec![0u8; 8096];
         let mut mode = None;
-        let mut tmp = 0u8;
         loop {
             let num = stdout.read(&mut buf).unwrap();
             if num == 0 {
@@ -53,16 +54,16 @@ pub fn spawn_thread(interval_ms: u64) -> Receiver<Event> {
                             mode = Some(KeyDown);
                         } else if line.starts_with("EVENT type 3") {
                             mode = Some(KeyUp);
-                        } else if line.starts_with("EVENT type 4") {
+                        } else if line.starts_with("EVENT type 15") {
                             mode = Some(MouseDown);
-                        } else if line.starts_with("EVENT type 5") {
+                        } else if line.starts_with("EVENT type 16") {
                             mode = Some(MouseUp);
                         }
                     },
                     Some(KeyDown) => mode = parse_keyboard(&tx, line, KeyDown),
                     Some(KeyUp) => mode = parse_keyboard(&tx, line, KeyUp),
-                    Some(MouseDown) => mode = parse_click(&tx, line, &mut tmp, MouseDown),
-                    Some(MouseUp) => mode = parse_click(&tx, line, &mut tmp, MouseUp)
+                    Some(MouseDown) => mode = parse_click(&tx, line, MouseDown),
+                    Some(MouseUp) => mode = parse_click(&tx, line, MouseUp)
                 }
             }
         }
@@ -80,20 +81,14 @@ fn parse_keyboard(tx: &Sender<Event>, line: &str, mode: EventKind) -> Option<Eve
     Some(mode)
 }
 
-fn parse_click(tx: &Sender<Event>, line: &str, tmp: &mut u8, mode: EventKind) -> Option<EventKind> {
+fn parse_click(tx: &Sender<Event>, line: &str, mode: EventKind) -> Option<EventKind> {
     if line.starts_with("    detail: ") {
-        let button = &line[12..];
-        let button = button.parse::<u8>().unwrap();
-        *tmp = button;
-    } else if line.starts_with("    event: ") {
-        let coords = &line[11..]; // "1012.11/735.55"
-        let coords = coords.split(|c| c == '/' || c == '.');
-        let coords = coords.collect::<Vec<_>>();
-        let coords = [coords[0], coords[2]];
-        let coords = coords.iter().map(|x| x.parse::<u16>().unwrap());
-        let coords = coords.collect::<Vec<_>>();
-        tx.send(Event { kind: mode, code: *tmp, x: coords[0], y: coords[1] }).unwrap();
-        return None;
+        let code = &line[12..];
+        let code = code.parse::<u8>().unwrap();
+        let mouse::Event { x, y } = mouse::get_current_mouse_location();
+        tx.send(Event { kind: mode, code, x, y }).unwrap();
+        None
+    } else {
+        Some(mode)
     }
-    Some(mode)
 }
