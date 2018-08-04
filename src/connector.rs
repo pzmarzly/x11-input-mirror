@@ -1,7 +1,7 @@
 use encryption::ChaCha;
 
 use std::io::{Read, Write};
-use std::net::{SocketAddr, Shutdown, TcpStream};
+use std::net::{SocketAddr, TcpStream};
 use std::time::Duration;
 
 pub struct Connector {
@@ -19,17 +19,6 @@ impl Connector {
             conn.set_read_timeout(Some(max_ping)).unwrap_or_else(|_| panic!("Cannot connect to {} - set_read_timeout failed", addr));
             conn.set_write_timeout(Some(max_ping)).unwrap_or_else(|_| panic!("Cannot connect to {} - set_write_timeout failed", addr));
 
-            // handshake1
-            conn.write_all(b"ping_fds321sfr").unwrap_or_else(|_| panic!("Cannot connect to {} - handshake1 failed", addr));
-
-            // handshake2
-            let mut buf = [0u8; 14];
-            conn.read_exact(&mut buf).unwrap_or_else(|_| panic!("Cannot connect to {} - handshake2 failed", addr));
-            if &buf != b"pong_fds321sfr" {
-                conn.shutdown(Shutdown::Both).is_ok();
-                panic!("Server {} does not appear to be compatible.", addr);
-            }
-
             // handshake3 - should be encrypted?
             let mut buf = [0u8; 1];
             buf[0] = should_be_encrypted_num;
@@ -38,10 +27,7 @@ impl Connector {
             // handshake4 - should be encrypted? + generate nonce
             let mut buf = [0u8; 25];
             conn.read_exact(&mut buf).unwrap_or_else(|_| panic!("Cannot connect to {} - handshake4 failed", addr));
-            if buf[0] != should_be_encrypted_num {
-                conn.shutdown(Shutdown::Both).is_ok();
-                panic!("Server {} has different SecurityConfig", addr);
-            }
+            if buf[0] != should_be_encrypted_num { panic!("Server {} has different SecurityConfig", addr); }
             let mut nonce = [0u8; 24];
             nonce.copy_from_slice(&buf[1..]);
 

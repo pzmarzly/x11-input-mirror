@@ -7,7 +7,7 @@ use keyboard_reset::reset_keys;
 use utils::{decode_u16, need_dep};
 
 use std::io::{Read, Write};
-use std::net::{Shutdown, TcpListener, TcpStream};
+use std::net::{TcpListener, TcpStream};
 use std::process::Command;
 use std::thread::{sleep, spawn};
 use std::time::Duration;
@@ -51,25 +51,12 @@ fn handler_thread(conn: &mut TcpStream, max_ping: Duration, password: &str) {
     conn.set_read_timeout(Some(max_ping)).unwrap_or_else(|_| panic!("Client {} disconnected - set_read_timeout failed", addr));
     conn.set_write_timeout(Some(max_ping)).unwrap_or_else(|_| panic!("Client {} disconnected - set_write_timeout failed", addr));
 
-    // handshake1
-    let mut buf = [0u8; 14];
-    conn.read_exact(&mut buf).unwrap_or_else(|_| panic!("Client {} disconnected - handshake1 failed", addr));
-    if &buf != b"ping_fds321sfr" {
-        conn.shutdown(Shutdown::Both).is_ok();
-        panic!("Incompatible client tried to connect from {}", addr);
-    }
-
-    // handshake2
-    conn.write_all(b"pong_fds321sfr").unwrap_or_else(|_| panic!("Client {} disconnected - handshake2 failed", addr));
-    println!("New connection from {}", addr);
-
     // handshake3 - should be encrypted?
     let should_be_encrypted = !password.is_empty();
     let should_be_encrypted_num = if should_be_encrypted { 1 } else { 0 };
     let mut buf = [0u8; 1];
     conn.read_exact(&mut buf).unwrap_or_else(|_| panic!("Client {} disconnected - handshake3 failed", addr));
     if buf[0] != should_be_encrypted_num {
-        conn.shutdown(Shutdown::Both).is_ok();
         panic!("Client with wrong SecurityConfig tried to connect from {}", addr);
     }
 
@@ -89,7 +76,6 @@ fn handler_thread(conn: &mut TcpStream, max_ping: Duration, password: &str) {
     conn.read_exact(&mut buf).unwrap_or_else(|_| panic!("Client {} disconnected - handshake5 failed", addr));
     chacha.xor(&mut buf);
     if &buf != b"ping_fds321sfr" {
-        conn.shutdown(Shutdown::Both).is_ok();
         panic!("Client {} uses different password", addr);
     }
 
@@ -146,7 +132,6 @@ fn handler_thread(conn: &mut TcpStream, max_ping: Duration, password: &str) {
                         .unwrap();
             }
             _ => {
-                conn.shutdown(Shutdown::Both).is_ok();
                 panic!("Client {} sent invalid packet", addr);
             }
         }
