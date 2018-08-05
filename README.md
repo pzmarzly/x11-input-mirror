@@ -34,21 +34,7 @@ Download Rust nightly toolchain, then run `cargo build --release`.
 
 ## X11 grabbing workaround
 
-Some applications (e.g. Chromium-based browsers) grab control of input device while they are used. Because of that, x11-input-mirror fails to mirror mouse clicks and/or keypresses between devices. A workaround is to use Xephyr (X11 inside X11). In `Xephyr` directory there are scripts that should help you get started. To use them:
-
-```text
-# the scripts I provided use i3 for window resizing. They use separate config file
-sudo apt install coreutils xserver-xephyr i3 x11-xserver-utils
-./Xephyr/start.sh 800x600 i3-chrome
-```
-
-Then `grabber` running outside of Xephyr will be able to capture all events.
-
-You can create launchers for other programs by making a copy of `i3-chrome` and customizing it.
-
-You may need to edit `i3-chrome` once `i3` changes its configuration format.
-
-If you want to run instances of Chromium-based browser inside and outside Xephyr at the same time, pass `--user-data-dir=somedirectory` flag to one of them.
+Since version 0.3, Chromium-based browsers work out-of-the-box, but you need to decrease `keyboard_and_clicks_interval_ms` (I recommend 1 ms now). If you need maximum performance, you can reverse commits "use slower method to grab clicks..." and "remove unnecessary Xephyr stuff", and use Xephyr workaround for Chromium-based browsers.
 
 ## Misc
 
