@@ -2,6 +2,12 @@ servers = [
     "10.69.10.2:9005",
     "10.69.10.3:9005"
 ]
+
+# max_ping_ms should be the same for client and server.
+# It must be at least twice as long as mouse_interval_ms
+# or else server may disconnect us.
 max_ping_ms = 500
+
 mouse_interval_ms = 100
+
 keyboard_and_clicks_interval_ms = 1

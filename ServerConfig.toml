@@ -1,2 +1,11 @@
+# 0.0.0.0 for all interfaces, 127.0.0.1 for localhost only etc.
+# Can be useful if you want all traffic tunnelled.
+# Instead of limiting the interface, you can alternatively
+# set up firewall properly. See:
+# https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-16-04
 interface_and_port = "0.0.0.0:9005"
+
+# max_ping_ms should be the same for client and server.
+# It must be at least twice as long as mouse_interval_ms
+# or else server may disconnect us.
 max_ping_ms = 500
