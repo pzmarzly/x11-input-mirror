@@ -4,4 +4,4 @@ servers = [
 ]
 max_ping_ms = 500
 mouse_interval_ms = 100
-keyboard_and_clicks_interval_ms = 100
+keyboard_and_clicks_interval_ms = 1

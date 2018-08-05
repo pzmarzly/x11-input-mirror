@@ -34,7 +34,7 @@ Download Rust nightly toolchain, then run `cargo build --release`.
 
 ## X11 grabbing workaround
 
-Since version 0.3, Chromium-based browsers work out-of-the-box, but you need to decrease `keyboard_and_clicks_interval_ms` (I recommend 1 ms now). If you need maximum performance, you can reverse commits "use slower method to grab clicks..." and "remove unnecessary Xephyr stuff", and use Xephyr workaround for Chromium-based browsers.
+Since version 0.3, Chromium-based browsers work out-of-the-box, but you need to decrease `keyboard_and_clicks_interval_ms` (I recommend 1 ms now). If you need maximum performance, you can reverse commits "use slower method to grab clicks...", "update default grabber config values" and "remove unnecessary Xephyr stuff", and use Xephyr workaround for Chromium-based browsers.
 
 ## Misc
 
