@@ -26,7 +26,7 @@ Use `grabber` binary on master server, and `server` on slaves.
 
 `grabber` requires `GrabberConfig.toml` and `SecurityConfig.toml`. `server` requires `ServerConfig.toml` and `SecurityConfig.toml`. Example files are in this repo.
 
-If you want to use the program inside VirtualBox, you need to disable Mouse Integration on slave servers.
+If you want to use the program inside VirtualBox, you may need to disable Mouse Integration on slave servers.
 
 ## Compiling
 
