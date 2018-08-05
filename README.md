@@ -6,7 +6,7 @@ Captures mouse and keyboard events on one PC, then broadcasts them over the netw
 
 ## Security
 
-You can enable encryption by setting `password` to be a non-empty string. However, if an attacker has been recording your traffic and gets your password, they will be able to decrypt all the traffic they recorder (no PFS). This program simply uses XChaCha20 with key being derived from password, and random initial nonce being sent in plaintext. Then message is sent twice, encrypted using different nonces, as a simple integrity check.
+You can enable encryption by setting `password` to be a non-empty string (12 characters or more is required). However, if an attacker has been recording your traffic and gets your password, they will be able to decrypt all the traffic they recorder (no PFS). This program simply uses XChaCha20 with key being derived from password, and random initial nonce being sent in plaintext. Then message is sent twice, encrypted using different nonces, as a simple integrity check.
 
 If you need more security, disable built-in encryption (by setting `password = ""`) and tunnel the traffic over SSH/OpenVPN/WireGuard etc.
 
@@ -46,4 +46,4 @@ Uses synchronous networking code, so may be not suited well for controlling mult
 
 The code is pretty bad, but it works for now. Feel free to improve it.
 
-Please keep in mind that devices can de-synchronize due to external factors (e.g. connectivity problems, VM having uneven resources, leading to program requiring more time to start). If you open YouTube in 2 browsers with no cookies, same User Agent, at the same time, from the same IP, you will probably get different order of videos.
+Please keep in mind that devices can de-synchronize due to external factors (e.g. connectivity problems, VM having uneven resources, leading to program requiring more time to start, RNG). If you open YouTube in 2 browsers with no cookies, same User Agent, at the same time, from the same IP, you will probably get different order of videos.
