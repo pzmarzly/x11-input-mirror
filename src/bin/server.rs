@@ -82,6 +82,8 @@ fn handler_thread(conn: &mut TcpStream, max_ping: Duration, password: &str) {
     // handshake6
     conn.write_all(b"\x01").unwrap_or_else(|_| panic!("Client {} disconnected - handshake6 failed", addr));
 
+    println!("Client {} connected successfully", addr);
+
     // loop, gets canceled by timeout or broken pipe
     loop {
         let mut buf = [0u8; 16];
