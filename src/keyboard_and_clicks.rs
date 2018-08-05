@@ -1,6 +1,6 @@
 use mouse;
 
-use std::io::{BufReader, BufRead};
+use std::io::Read;
 use std::process::{Command, Stdio};
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::thread::{sleep, spawn};
@@ -30,38 +30,41 @@ pub fn spawn_thread(interval_ms: u64) -> Receiver<Event> {
     let interval = Duration::from_millis(interval_ms);
     let (tx, rx) = channel();
     spawn(move || {
-        let child = Command::new("xinput")
+        let r = Command::new("xinput")
             .arg("test-xi2")
             .arg("--root")
             .stdout(Stdio::piped())
             .spawn()
             .unwrap();
-        let mut reader = BufReader::with_capacity(8192, child.stdout.unwrap());
-        let mut buf = String::with_capacity(256);
+        let mut stdout = r.stdout.unwrap();
+        let mut buf = vec![0u8; 8096];
         let mut mode = None;
         loop {
-            let num = reader.read_line(&mut buf).unwrap();
+            let num = stdout.read(&mut buf).unwrap();
             if num == 0 {
                 sleep(interval);
                 continue;
             }
-            let line = &buf[..num];
-            match mode {
-                None => {
-                    if line.starts_with("EVENT type 2") {
-                        mode = Some(KeyDown);
-                    } else if line.starts_with("EVENT type 3") {
-                        mode = Some(KeyUp);
-                    } else if line.starts_with("EVENT type 15") {
-                        mode = Some(MouseDown);
-                    } else if line.starts_with("EVENT type 16") {
-                        mode = Some(MouseUp);
-                    }
-                },
-                Some(KeyDown) => mode = parse_keyboard(&tx, line, KeyDown),
-                Some(KeyUp) => mode = parse_keyboard(&tx, line, KeyUp),
-                Some(MouseDown) => mode = parse_click(&tx, line, MouseDown),
-                Some(MouseUp) => mode = parse_click(&tx, line, MouseUp)
+            let lines = String::from_utf8_lossy(&buf[0..num]);
+
+            for line in lines.split('\n') {
+                match mode {
+                    None => {
+                        if line.starts_with("EVENT type 2") {
+                            mode = Some(KeyDown);
+                        } else if line.starts_with("EVENT type 3") {
+                            mode = Some(KeyUp);
+                        } else if line.starts_with("EVENT type 15") {
+                            mode = Some(MouseDown);
+                        } else if line.starts_with("EVENT type 16") {
+                            mode = Some(MouseUp);
+                        }
+                    },
+                    Some(KeyDown) => mode = parse_keyboard(&tx, line, KeyDown),
+                    Some(KeyUp) => mode = parse_keyboard(&tx, line, KeyUp),
+                    Some(MouseDown) => mode = parse_click(&tx, line, MouseDown),
+                    Some(MouseUp) => mode = parse_click(&tx, line, MouseUp)
+                }
             }
         }
     });
