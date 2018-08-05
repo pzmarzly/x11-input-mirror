@@ -37,7 +37,7 @@ pub fn spawn_thread(interval_ms: u64) -> Receiver<Event> {
             .spawn()
             .unwrap();
         let mut stdout = r.stdout.unwrap();
-        let mut buf = vec![0u8; 8096];
+        let mut buf = vec![0u8; 64 * 1024 * 1024];
         let mut mode = None;
         loop {
             let num = stdout.read(&mut buf).unwrap();
