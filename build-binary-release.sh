@@ -1,4 +1,5 @@
 #!/bin/bash
+rm x11-input-mirror.zip
 rm -rf tmp
 mkdir tmp
 mkdir tmp/x11-input-mirror
