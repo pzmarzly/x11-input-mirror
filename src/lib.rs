@@ -1,4 +1,5 @@
 #![feature(panic_info_message)]
+#![feature(int_to_from_bytes)]
 
 extern crate chacha;
 extern crate rand;
