@@ -35,8 +35,8 @@ macro_rules! generate_loader {
 
                 let mut file = File::open(filename).unwrap_or_else(|_| panic!("File {} doesn't exist", filename));
                 let mut contents = String::new();
-                file.read_to_string(&mut contents).expect("config.toml is not UTF-8 formatted");
-                toml::from_str(&contents).expect("config.toml is not a valid TOML file")
+                file.read_to_string(&mut contents).unwrap_or_else(|_| panic!("{} is not UTF-8 formatted", filename));
+                toml::from_str(&contents).unwrap_or_else(|_| panic!("{} is not a valid TOML file", filename))
             }
         }
     };
