@@ -3,7 +3,7 @@ rm x11-input-mirror.zip
 rm -rf tmp
 mkdir tmp
 mkdir tmp/x11-input-mirror
-cargo build --release
+cargo +nightly build --release
 cp target/release/grabber tmp/x11-input-mirror/
 cp target/release/server tmp/x11-input-mirror/
 cp GrabberConfig.toml tmp/x11-input-mirror/
