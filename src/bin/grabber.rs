@@ -17,11 +17,14 @@ fn main() {
 
     let sec_config = SecurityConfig::load();
     let password = sec_config.password;
-    if password.len() < 12 { panic!("Password must have at least 12 characters") }
+    if password.len() < 12 {
+        panic!("Password must have at least 12 characters")
+    }
 
     let mut conns = Connector::connect(config.servers, max_ping, &password);
     let mouse_rx = mouse::spawn_thread(config.mouse_interval_ms);
-    let keyboard_and_clicks_rx = keyboard_and_clicks::spawn_thread(config.keyboard_and_clicks_interval_ms);
+    let keyboard_and_clicks_rx =
+        keyboard_and_clicks::spawn_thread(config.keyboard_and_clicks_interval_ms);
 
     println!("Started successfully");
 
@@ -37,11 +40,11 @@ fn main() {
             use keyboard_and_clicks::EventKind::*;
             buf[0] = match msg.kind {
                 KeyDown | KeyUp => 101,
-                MouseDown | MouseUp => 102
+                MouseDown | MouseUp => 102,
             };
             buf[1] = match msg.kind {
                 KeyDown | MouseDown => 1,
-                KeyUp | MouseUp => 2
+                KeyUp | MouseUp => 2,
             };
             buf[2] = msg.code;
             buf[3..5].copy_from_slice(&encode_u16(msg.x));

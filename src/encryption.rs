@@ -1,6 +1,6 @@
 use chacha;
 use chacha::KeyStream;
-use rand::{Rng, thread_rng};
+use rand::{thread_rng, Rng};
 use sha3::{Digest, Sha3_256};
 
 pub fn random_fill_25(buf: &mut [u8]) {
@@ -20,7 +20,7 @@ pub fn is_tampered_16(buf: &[u8]) -> bool {
 }
 
 pub struct ChaCha {
-    internal: Option<chacha::ChaCha>
+    internal: Option<chacha::ChaCha>,
 }
 
 impl ChaCha {
@@ -33,9 +33,11 @@ impl ChaCha {
                 result.copy_from_slice(hasher.result().as_slice());
                 result
             };
-            ChaCha { internal: Some(chacha::ChaCha::new_xchacha20(&secret_key, nonce)) }
+            ChaCha {
+                internal: Some(chacha::ChaCha::new_xchacha20(&secret_key, nonce)),
+            }
         } else {
-            ChaCha { internal: None}
+            ChaCha { internal: None }
         }
     }
     pub fn xor(&mut self, dest: &mut [u8]) {

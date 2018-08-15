@@ -5,7 +5,7 @@ use std::net::{SocketAddr, TcpStream};
 use std::time::Duration;
 
 pub struct Connector {
-    conns: Vec<(TcpStream, SocketAddr, ChaCha)>
+    conns: Vec<(TcpStream, SocketAddr, ChaCha)>,
 }
 
 impl Connector {
@@ -13,37 +13,53 @@ impl Connector {
         let should_be_encrypted = !password.is_empty();
         let should_be_encrypted_num = if should_be_encrypted { 1 } else { 0 };
 
-        let conns = addrs.into_iter().map(|addr| {
-            let mut conn = TcpStream::connect(addr).unwrap_or_else(|_| panic!("Cannot connect to {}", addr));
-            conn.set_nodelay(true).unwrap_or_else(|_| panic!("Cannot connect to {} - set_nodelay failed", addr));
-            conn.set_read_timeout(Some(max_ping)).unwrap_or_else(|_| panic!("Cannot connect to {} - set_read_timeout failed", addr));
-            conn.set_write_timeout(Some(max_ping)).unwrap_or_else(|_| panic!("Cannot connect to {} - set_write_timeout failed", addr));
+        let conns = addrs
+            .into_iter()
+            .map(|addr| {
+                let mut conn = TcpStream::connect(addr)
+                    .unwrap_or_else(|_| panic!("Cannot connect to {}", addr));
+                conn.set_nodelay(true)
+                    .unwrap_or_else(|_| panic!("Cannot connect to {} - set_nodelay failed", addr));
+                conn.set_read_timeout(Some(max_ping)).unwrap_or_else(|_| {
+                    panic!("Cannot connect to {} - set_read_timeout failed", addr)
+                });
+                conn.set_write_timeout(Some(max_ping)).unwrap_or_else(|_| {
+                    panic!("Cannot connect to {} - set_write_timeout failed", addr)
+                });
 
-            // handshake3 - should be encrypted?
-            let mut buf = [0u8; 1];
-            buf[0] = should_be_encrypted_num;
-            conn.write_all(&buf).unwrap_or_else(|_| panic!("Cannot connect to {} - handshake3 failed", addr));
+                // handshake3 - should be encrypted?
+                let mut buf = [0u8; 1];
+                buf[0] = should_be_encrypted_num;
+                conn.write_all(&buf)
+                    .unwrap_or_else(|_| panic!("Cannot connect to {} - handshake3 failed", addr));
 
-            // handshake4 - should be encrypted? + generate nonce
-            let mut buf = [0u8; 25];
-            conn.read_exact(&mut buf).unwrap_or_else(|_| panic!("Cannot connect to {} - handshake4 failed", addr));
-            if buf[0] != should_be_encrypted_num { panic!("Server {} has different SecurityConfig", addr); }
-            let mut nonce = [0u8; 24];
-            nonce.copy_from_slice(&buf[1..]);
+                // handshake4 - should be encrypted? + generate nonce
+                let mut buf = [0u8; 25];
+                conn.read_exact(&mut buf)
+                    .unwrap_or_else(|_| panic!("Cannot connect to {} - handshake4 failed", addr));
+                if buf[0] != should_be_encrypted_num {
+                    panic!("Server {} has different SecurityConfig", addr);
+                }
+                let mut nonce = [0u8; 24];
+                nonce.copy_from_slice(&buf[1..]);
 
-            // handshake5
-            let mut chacha = ChaCha::new(should_be_encrypted, password, &nonce);
-            let mut buf = [0u8; 14];
-            buf[..].copy_from_slice(b"ping_fds321sfr");
-            chacha.xor(&mut buf);
-            conn.write_all(&buf).unwrap_or_else(|_| panic!("Cannot connect to {} - handshake5 failed", addr));
+                // handshake5
+                let mut chacha = ChaCha::new(should_be_encrypted, password, &nonce);
+                let mut buf = [0u8; 14];
+                buf[..].copy_from_slice(b"ping_fds321sfr");
+                chacha.xor(&mut buf);
+                conn.write_all(&buf)
+                    .unwrap_or_else(|_| panic!("Cannot connect to {} - handshake5 failed", addr));
 
-            // handshake6
-            let mut buf = [0u8; 1];
-            conn.read_exact(&mut buf).unwrap_or_else(|_| panic!("Server {} uses different password? Cannot connect to {} - handshake6 failed", addr, addr));
+                // handshake6
+                let mut buf = [0u8; 1];
+                conn.read_exact(&mut buf).unwrap_or_else(|_| {
+                    panic!("Server {} uses different password? Cannot connect to {} - handshake6 failed", addr, addr)
+                });
 
-            (conn, addr, chacha)
-        }).collect::<Vec<_>>();
+                (conn, addr, chacha)
+            })
+            .collect::<Vec<_>>();
         Connector { conns }
     }
     pub fn write(&mut self, data: [u8; 16]) {
@@ -56,7 +72,8 @@ impl Connector {
             }
             chacha.xor(&mut data[..8]);
             chacha.xor(&mut data[8..]);
-            conn.write_all(&data).unwrap_or_else(|_| panic!("Connection to server {} lost", addr));
+            conn.write_all(&data)
+                .unwrap_or_else(|_| panic!("Connection to server {} lost", addr));
         }
     }
 }

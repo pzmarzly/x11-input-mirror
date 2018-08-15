@@ -11,7 +11,7 @@ pub enum EventKind {
     KeyDown,
     KeyUp,
     MouseDown,
-    MouseUp
+    MouseUp,
 }
 
 #[derive(Debug)]
@@ -22,7 +22,7 @@ pub struct Event {
     /// Mouse position X, or 0 in case of keyboard event.
     pub x: u16,
     /// Mouse position Y, or 0 in case of keyboard event.
-    pub y: u16
+    pub y: u16,
 }
 
 pub fn spawn_thread(interval_ms: u64) -> Receiver<Event> {
@@ -59,11 +59,11 @@ pub fn spawn_thread(interval_ms: u64) -> Receiver<Event> {
                         } else if line.starts_with("EVENT type 16") {
                             mode = Some(MouseUp);
                         }
-                    },
+                    }
                     Some(KeyDown) => mode = parse_keyboard(&tx, line, KeyDown),
                     Some(KeyUp) => mode = parse_keyboard(&tx, line, KeyUp),
                     Some(MouseDown) => mode = parse_click(&tx, line, MouseDown),
-                    Some(MouseUp) => mode = parse_click(&tx, line, MouseUp)
+                    Some(MouseUp) => mode = parse_click(&tx, line, MouseUp),
                 }
             }
         }
@@ -75,7 +75,12 @@ fn parse_keyboard(tx: &Sender<Event>, line: &str, mode: EventKind) -> Option<Eve
     if line.starts_with("    detail: ") {
         let num = &line[12..];
         let num = num.parse::<u8>().unwrap();
-        tx.send(Event { kind: mode, code: num, x: 0, y: 0 }).unwrap();
+        tx.send(Event {
+            kind: mode,
+            code: num,
+            x: 0,
+            y: 0,
+        }).unwrap();
         return None;
     }
     Some(mode)
@@ -86,7 +91,12 @@ fn parse_click(tx: &Sender<Event>, line: &str, mode: EventKind) -> Option<EventK
         let code = &line[12..];
         let code = code.parse::<u8>().unwrap();
         let mouse::Event { x, y } = mouse::get_current_mouse_location();
-        tx.send(Event { kind: mode, code, x, y }).unwrap();
+        tx.send(Event {
+            kind: mode,
+            code,
+            x,
+            y,
+        }).unwrap();
         None
     } else {
         Some(mode)

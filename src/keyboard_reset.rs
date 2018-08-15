@@ -1,7 +1,13 @@
 use std::process::Command;
 
 pub fn reset_keys() {
-    let key_up = |name| Command::new("xdotool").arg("keyup").arg(name).status().is_ok();
+    let key_up = |name| {
+        Command::new("xdotool")
+            .arg("keyup")
+            .arg(name)
+            .status()
+            .is_ok()
+    };
     key_up("Control_L");
     key_up("Control_R");
     key_up("Shift_L");

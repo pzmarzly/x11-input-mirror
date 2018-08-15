@@ -14,7 +14,7 @@ pub fn decode_u16(bytes: &[u8]) -> String {
 
 pub fn need_dep(name: &str) {
     Command::new(name)
-            .arg("--version")
-            .output()
-            .unwrap_or_else(|_| panic!("Missing global binary: {}", name));
+        .arg("--version")
+        .output()
+        .unwrap_or_else(|_| panic!("Missing global binary: {}", name));
 }
