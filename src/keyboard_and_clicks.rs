@@ -54,6 +54,10 @@ pub fn spawn_thread(interval_ms: u64) -> Receiver<Event> {
                             mode = Some(KeyDown);
                         } else if line.starts_with("EVENT type 3") {
                             mode = Some(KeyUp);
+                        } else if line.starts_with("EVENT type 4") {
+                            mode = Some(MouseDown);
+                        } else if line.starts_with("EVENT type 5") {
+                            mode = Some(MouseUp);
                         } else if line.starts_with("EVENT type 15") {
                             mode = Some(MouseDown);
                         } else if line.starts_with("EVENT type 16") {
