@@ -1,6 +1,6 @@
 [package]
 name = "x11-input-mirror"
-version = "0.3.4"
+version = "0.3.5"
 description = "Mirrors X11 (Xserver) input events from one PC to multiple over the network"
 authors = ["Paweł Zmarzły <pawo2500@gmail.com>"]
 repository = "https://github.com/pzmarzly/x11-input-mirror"
