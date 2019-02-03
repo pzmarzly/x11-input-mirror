@@ -10,12 +10,12 @@ categories = ["network-programming", "command-line-utilities"]
 license = "MIT"
 
 [dependencies]
-serde = "1.0.74"
-serde_derive = "1.0.74"
-toml = "0.4.6"
-rand = "0.5.5"
+serde = "1.0.86"
+serde_derive = "1.0.86"
+toml = "0.4.10"
+rand = "0.5.6"
 chacha = "0.3.0"
-sha3 = "0.7.3"
+sha3 = "0.8.1"
 
 [profile.release]
 lto = true
