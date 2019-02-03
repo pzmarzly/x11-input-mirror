@@ -14,7 +14,7 @@ serde = "1.0.74"
 serde_derive = "1.0.74"
 toml = "0.4.6"
 rand = "0.5.5"
-chacha = "0.1.0"
+chacha = "0.3.0"
 sha3 = "0.7.3"
 
 [profile.release]
