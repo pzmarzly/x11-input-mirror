@@ -6,9 +6,9 @@ Captures mouse and keyboard events on one PC, then broadcasts them over the netw
 
 ## Security
 
-You can enable encryption by setting `password` to be a non-empty string (12 characters or more is required). However, if an attacker has been recording your traffic and gets your password, they will be able to decrypt all the traffic they recorder (no PFS). This program simply uses XChaCha20 with key being derived from password, and random initial nonce being sent in plaintext. Then message is sent twice, encrypted using different nonces, as a simple integrity check.
+It is **highly** recommended to just tunnel the traffic over SSH/OpenVPN/WireGuard etc.
 
-If you need more security, disable built-in encryption (by setting `password = ""`) and tunnel the traffic over SSH/OpenVPN/WireGuard etc.
+There is an over-engineered ugly built-in encryption though, which you set up in `SecurityConfig.toml`. Setting `password = ""` will disable it. Set it to a non-empty string (12 characters or more is required) to enable. If an attacker has been recording your traffic and gets your password, they will be able to decrypt all the traffic they recorded (no PFS). This program simply uses XChaCha20 with password as a key, and random initial nonce being sent in plaintext. Then message is sent twice, encrypted using different nonces, as a simple integrity check.
 
 ## Installation
 
